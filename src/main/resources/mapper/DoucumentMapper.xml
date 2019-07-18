@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="swust.yang.dao.DocumentDao" >
+  <resultMap id="BaseResultMap" type="swust.yang.pojo.Document" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+
+    <result column="plug_id" property="plugId" jdbcType= "INTEGER"/>
+    <result column="name" property="name" jdbcType= "VARCHAR"/>
+    <result column="description" property="description" jdbcType= "VARCHAR"/>
+    <result column="author" property="author" jdbcType= "VARCHAR"/>
+    <result column="date" property="date" jdbcType= "DATE"/>
+    <result column="downloads" property="downloads" jdbcType= "VARCHAR"/>
+    <result column="location" property="location" jdbcType= "VARCHAR"/>
+    <result column="tag" property="tag" jdbcType= "VARCHAR"/>
+  </resultMap>
+  <resultMap id="VOResultMap" type="swust.yang.vo.VODocument" >
+    <result column="name" property="name" jdbcType= "VARCHAR"/>
+    <result column="description" property="description" jdbcType= "VARCHAR"/>
+    <result column="author" property="author" jdbcType= "VARCHAR"/>
+    <result column="date" property="date" jdbcType= "DATE"/>
+    <result column="downloads" property="downloads" jdbcType= "VARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    	id
+    	,plug_id
+    	,name
+    	,description
+    	,author
+    	,date
+    	,downloads
+    	,location
+    	,tag
+  </sql>
+  <sql id="VO_Column_List" >
+  		id
+    	,name
+    	,description
+    	,author
+    	,date
+    	,downloads
+  </sql>
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from document
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="delById" parameterType="java.lang.Integer" >
+    delete from document
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="save" parameterType="swust.yang.pojo.Document" >
+    insert into document ( plug_id,name,description,author,date,downloads,location,tag)
+
+    values (  #{plugId,jdbcType=INTEGER},#{name,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},#{author,jdbcType=VARCHAR},#{date,jdbcType=DATE},#{downloads,jdbcType=VARCHAR},#{location,jdbcType=VARCHAR},#{tag,jdbcType=VARCHAR} )
+   
+  </insert>
+  
+  <update id="editDownloadsById" parameterType="hashmap">
+    update document set downloads = #{downloads,jdbcType=VARCHAR} 
+	where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="editById" parameterType="swust.yang.pojo.Document" >
+    update document set  id = #{id,jdbcType=INTEGER}
+     ,plug_id = #{plugId,jdbcType=INTEGER} ,name = #{name,jdbcType=VARCHAR} ,description = #{description,jdbcType=VARCHAR} ,author = #{author,jdbcType=VARCHAR} ,date = #{date,jdbcType=DATE} ,downloads = #{downloads,jdbcType=VARCHAR} ,location = #{location,jdbcType=VARCHAR} ,tag = #{tag,jdbcType=VARCHAR}
+	where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <select id="list" resultMap="VOResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="VO_Column_List" />
+    from document
+    where tag = #{tag,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="pagelist" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />  
+    from document  limit  #{page},#{limit};
+  </select>
+</mapper>

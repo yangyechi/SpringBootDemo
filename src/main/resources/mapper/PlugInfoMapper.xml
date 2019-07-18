@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="swust.yang.dao.PlugInfoDao" >
+  <resultMap id="BaseResultMap" type="swust.yang.pojo.PlugInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+
+    <result column="user_id" property="userId" jdbcType= "INTEGER"/>
+    <result column="name" property="name" jdbcType= "VARCHAR"/>
+    <result column="description" property="description" jdbcType= "VARCHAR"/>
+    <result column="version" property="version" jdbcType= "VARCHAR"/>
+    <result column="maintainers" property="maintainers" jdbcType= "VARCHAR"/>
+    <result column="developers" property="developers" jdbcType= "VARCHAR"/>
+    <result column="date" property="date" jdbcType= "DATE"/>
+    <result column="downloads" property="downloads" jdbcType= "VARCHAR"/>
+    <result column="location" property="location" jdbcType= "VARCHAR"/>
+    <result column="dependency" property="dependency" jdbcType= "VARCHAR"/>
+  </resultMap>
+  <resultMap id="VOResultMap" type="swust.yang.vo.VOPlugInfo" >
+    <result column="name" property="name" jdbcType= "VARCHAR"/>
+    <result column="description" property="description" jdbcType= "VARCHAR"/>
+    <result column="version" property="version" jdbcType= "VARCHAR"/>
+    <result column="maintainers" property="maintainers" jdbcType= "VARCHAR"/>
+    <result column="developers" property="developers" jdbcType= "VARCHAR"/>
+    <result column="date" property="date" jdbcType= "DATE"/>
+    <result column="downloads" property="downloads" jdbcType= "VARCHAR"/>
+  </resultMap>
+  
+  <resultMap id="VOResultMap2" type="swust.yang.vo.VOPlugIdAndName" >
+  	<id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType= "VARCHAR"/>
+  </resultMap>       
+  <sql id="Base_Column_List" >
+    	id
+    	,user_id
+    	,name
+    	,description
+    	,version
+    	,maintainers
+    	,developers
+    	,date
+    	,downloads
+    	,location
+    	,dependency
+  </sql>
+  <sql id="VO_Column_List" >
+  		id
+    	,name
+    	,description
+    	,version
+    	,maintainers
+    	,developers
+    	,date
+    	,downloads
+  </sql>
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from plug_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="delById" parameterType="java.lang.Integer" >
+    delete from plug_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="save" parameterType="swust.yang.pojo.PlugInfo" >
+    insert into plug_info ( user_id,name,description,version,maintainers,developers,date,downloads,location,dependency)
+
+    values (  #{userId,jdbcType=INTEGER},#{name,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},#{version,jdbcType=VARCHAR},#{maintainers,jdbcType=VARCHAR},#{developers,jdbcType=VARCHAR},#{date,jdbcType=DATE},#{downloads,jdbcType=VARCHAR},#{location,jdbcType=VARCHAR},#{dependency,jdbcType=VARCHAR} )
+   
+  </insert>
+  
+  <update id="editById" parameterType="swust.yang.pojo.PlugInfo" >
+    update plug_info set  id = #{id,jdbcType=INTEGER}
+     ,user_id = #{userId,jdbcType=INTEGER} ,name = #{name,jdbcType=VARCHAR} ,description = #{description,jdbcType=VARCHAR} ,version = #{version,jdbcType=VARCHAR} ,maintainers = #{maintainers,jdbcType=VARCHAR} ,developers = #{developers,jdbcType=VARCHAR} ,date = #{date,jdbcType=DATE} ,downloads = #{downloads,jdbcType=VARCHAR} ,location = #{location,jdbcType=VARCHAR} ,dependency = #{dependency,jdbcType=VARCHAR}
+	where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="editDownloadsById" parameterType="hashmap">
+    update plug_info set downloads = #{downloads,jdbcType=VARCHAR} 
+	where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <select id="searchPlugs" parameterType = "java.lang.String" resultMap="VOResultMap">
+    select DISTINCT
+    <include refid="VO_Column_List" />
+    from plug_info
+    where name LIKE CONCAT(CONCAT('%',#{content}),'%') OR description LIKE CONCAT(CONCAT('%',#{content}),'%')
+       OR version LIKE CONCAT(CONCAT('%',#{content}),'%') OR maintainers LIKE CONCAT(CONCAT('%',#{content}),'%')
+       OR developers LIKE CONCAT(CONCAT('%',#{content}),'%') 
+  </select>
+  
+   <select id="list" resultMap="VOResultMap">
+    select 
+    <include refid="VO_Column_List" />
+    from plug_info
+  </select>
+  
+  <select id="listIdAndName" resultMap="VOResultMap2">
+    select id,name
+    from plug_info
+  </select>
+  
+   <select id="pagelist" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />  
+    from plug_info  limit  #{page},#{limit};
+  </select>
+</mapper>
